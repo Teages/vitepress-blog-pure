@@ -1,13 +1,14 @@
 const { getPosts, generatePaginationPages } = require('./theme/serverUtils')
 
 async function config() {
-    await generatePaginationPages()
+    const docPath = 'docs'
+    await generatePaginationPages(docPath)
     return {
         title: 'vitepress-blog',
         base:'/',
         description: 'vitepress,blog,blog-theme',
         themeConfig: {
-            posts: await getPosts(),
+            posts: await getPosts(docPath),
             pageSize: 25565,
             website: 'https://github.com/airene/vitepress-blog-pure', //copyright link
             comment: {

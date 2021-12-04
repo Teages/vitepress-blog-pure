@@ -68,3 +68,19 @@ h6:focus .header-anchor {
 td, th {
   @apply m-3;
 }
+
+// Theme
+
+#app, .theme, .page {
+  @apply min-h-screen h-auto;
+}
+.page, .container {
+  @apply flex flex-col;
+}
+.container {
+  @apply min-h-full;
+}
+
+footer.page-footer, .container {
+  @apply flex-grow;
+}

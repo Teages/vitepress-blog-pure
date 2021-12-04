@@ -5,16 +5,17 @@ const path = require('path')
 
 module.exports = { getPosts, generatePaginationPages }
 
-async function getPosts() {
-    let paths = await getPostMDFilePaths()
+async function getPosts(docPath) {
+    let paths = await getPostMDFilePaths(docPath)
     let posts = await Promise.all(
         paths.map(async (item) => {
             const content = await fs.readFile(item, 'utf-8')
             const { data } = matter(content)
             data.date = _convertDate(data.date)
+            console.log('Found Article:', path.relative(docPath, item))
             return {
                 frontMatter: data,
-                regularPath: `/${item.replace('.md', '.html')}`
+                regularPath: `/${path.relative(docPath, item).replace('.md', '.html')}`
             }
         })
     )
@@ -22,13 +23,12 @@ async function getPosts() {
     return posts
 }
 
-async function generatePaginationPages() {
+async function generatePaginationPages(docPath) {
     // getPostMDFilePath return type is object not array
-    let allPagesLength = [...(await getPostMDFilePaths())].length
+    let allPagesLength = [...(await getPostMDFilePaths(docPath))].length
 
-    const paths = path.resolve('./')
-    if (allPagesLength > 0) {
-        const page = `
+    const paths = path.resolve('./', docPath)
+    const page = `
 ---
 page: true
 date: 2021-06-30
@@ -44,9 +44,9 @@ const posts = theme.value.posts
 </script>
 <Page :posts="posts"/>
 `.trim()
-        const file = paths + `/index.md`
-        await fs.writeFile(file, page)
-    }
+    const file = path.resolve(paths, `./index.md`)
+    console.log(file)
+    await fs.writeFile(file, page)
 }
 
 function _convertDate(date = new Date().toString()) {
@@ -58,9 +58,7 @@ function _compareDate(obj1, obj2) {
     return obj1.frontMatter.date < obj2.frontMatter.date ? 1 : -1
 }
 
-async function getPostMDFilePaths() {
-    let paths = await globby(['**.md'], {
-        ignore: ['node_modules', 'README.md']
-    })
+async function getPostMDFilePaths(docPath) {
+    let paths = await globby([`./${docPath}/*/**.md`])
     return paths.filter((item) => item.includes('posts/'))
 }
