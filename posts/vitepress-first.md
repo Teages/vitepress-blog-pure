@@ -1,96 +1,424 @@
 ---
 date: 2021-06-30
-title: 一直想找一个系统架构和设计都足够干净的系统
+title: 一个标题
 tags:
 - vitepress
 - markdown
-description: vitepress的markdown插件支持的语法，一直想找一个干净的系统架构和设计都足够干净都，一直没满意的，不满意就自己设计，一直想找一个干净的系统架构和设计都足够干净都，一直没满意的，不满意就自己设计
+description: 一个描述
 ---
-# 一直想找一个系统架构和设计都足够干净的系统
-## 前提
-理论上任何工具写出来的markdown(下文简称md)文件都能用，但是如果是按照以下方式写的话，可能表现力会丰富很多
+# Hello VitePress
 
-## 查看环境
+# Markdown Extensions
 
-假设你是mac？！
+## Header Anchors
 
-* 安装 brew 这个可以装很多东西，正常是网上搜一句命令就装了
-```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+Headers automatically get anchor links applied. Rendering of anchors can be configured using the `markdown.anchor` option.
+
+## Links
+
+### Internal Links
+
+Internal links are converted to router link for SPA navigation. Also, every `index.md` contained in each sub-directory will automatically be converted to `index.html`, with corresponding URL `/`.
+
+For example, given the following directory structure:
+
 ```
-* 安装 node ，有brew的情况下， 就是 `brew info node` 一句话就行了
-```bash
-brew info node
+.
+├─ index.md
+├─ foo
+│  ├─ index.md
+│  ├─ one.md
+│  └─ two.md
+└─ bar
+   ├─ index.md
+   ├─ three.md
+   └─ four.md
 ```
-* 安装 vitepress 本文重点 前两个都有都情况下 一句话就行了 `npm install -g vitepress`
- ```bash
-npm install -g vitepress
+
+And providing you are in `foo/one.md`:
+
+```md
+[Home](/) <!-- sends the user to the root index.md -->
+[foo](/foo/) <!-- sends the user to index.html of directory foo -->
+[foo heading](./#heading) <!-- anchors user to a heading in the foo index file -->
+[bar - three](../bar/three) <!-- you can omit extention -->
+[bar - three](../bar/three.md) <!-- you can append .md -->
+[bar - four](../bar/four.html) <!-- or you can append .html -->
 ```
 
-到你的md目录执行 vitepress dev . 就能查看文档大致的样子 ,通常是这样的地址 http://localhost:3000
+### Page Suffix
 
-## vitepress-markdown 特性
+Pages and internal links get generated with the `.html` suffix by default.
 
-### 表格
+### External Links
+
+Outbound links automatically get `target="_blank" rel="noopener noreferrer"`:
+
+- [vuejs.org](https://vuejs.org)
+- [VitePress on GitHub](https://github.com/vuejs/vitepress)
+
+## Frontmatter
+
+[YAML frontmatter](https://jekyllrb.com/docs/frontmatter/) is supported out of the box:
+
+```yaml
+---
+title: Blogging Like a Hacker
+lang: en-US
+---
+```
+
+This data will be available to the rest of the page, along with all custom and theming components.
+
+
+
+## GitHub-Style Tables
+
+**Input**
+
+```
 | Tables        | Are           | Cool  |
 | ------------- |:-------------:| -----:|
 | col 3 is      | right-aligned | $1600 |
 | col 2 is      | centered      |   $12 |
 | zebra stripes | are neat      |    $1 |
+```
 
-### 提示
+**Output**
+
+| Tables        |      Are      |   Cool |
+| ------------- | :-----------: | -----: |
+| col 3 is      | right-aligned | \$1600 |
+| col 2 is      |   centered    |   \$12 |
+| zebra stripes |   are neat    |    \$1 |
+
+## Emoji :tada:
+
+**Input**
 
 ```
+:tada: :100:
+```
+
+**Output**
+
+:tada: :100:
+
+A [list of all emojis](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json) is available.
+
+## Table of Contents
+
+**Input**
+
+```
+[[toc]]
+```
+
+**Output**
+
+[[toc]]
+
+Rendering of the TOC can be configured using the `markdown.toc` option.
+
+## Custom Containers
+
+Custom containers can be defined by their types, titles, and contents.
+
+### Default Title
+
+**Input**
+
+```md
 ::: tip
 This is a tip
+:::
+
+::: info
+This is an info box
 :::
 
 ::: warning
 This is a warning
 :::
 
-::: danger what??
+::: danger
 This is a dangerous warning
 :::
 ```
+
+**Output**
+
 ::: tip
 This is a tip
+:::
+
+::: info
+This is an info box
 :::
 
 ::: warning
 This is a warning
 :::
 
-::: danger what??
+::: danger
 This is a dangerous warning
 :::
 
-### 代码高亮
+### Custom Title
 
-``` js
+**Input**
+
+```md
+::: danger STOP
+Danger zone, do not proceed
+:::
+```
+
+**Output**
+
+::: danger STOP
+Danger zone, do not proceed
+:::
+
+## Syntax Highlighting in Code Blocks
+
+VitePress uses [Prism](https://prismjs.com/) to highlight language syntax in Markdown code blocks, using coloured text. Prism supports a wide variety of programming languages. All you need to do is append a valid language alias to the beginning backticks for the code block:
+
+**Input**
+
+````
+```js
 export default {
   name: 'MyComponent',
   // ...
 }
 ```
+````
 
-### emoji表情
-```markdown
-:tada: :100:
+**Output**
+
+```js
+export default {
+  name: 'MyComponent'
+  // ...
+}
 ```
-:tada: :100:
 
+**Input**
 
-## 规范与建议
+````
+```html
+<ul>
+  <li v-for="todo in todos" :key="todo.id">
+    {{ todo.text }}
+  </li>
+</ul>
+```
+````
 
-便于效果一致，目前发现页面标题从 ## h2 开始使用可以获得最佳展示效果
+**Output**
 
-## 生产环境的文档
+```html
+<ul>
+  <li v-for="todo in todos" :key="todo.id">{{ todo.text }}</li>
+</ul>
+```
 
-* 上线目前为手动上线 以后可能搞成自动
-* 本地全写完也是可以的
+A [list of valid languages](https://prismjs.com/#languages-list) is available on Prism’s site.
 
-## 玩转侧边栏 以后再写吧
+## Line Highlighting in Code Blocks
+
+**Input**
+
+````
+```js{4}
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!'
+    }
+  }
+}
+```
+````
+
+**Output**
+
+```js{4}
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!'
+    }
+  }
+}
+```
+
+In addition to a single line, you can also specify multiple single lines, ranges, or both:
+
+- Line ranges: for example `{5-8}`, `{3-10}`, `{10-17}`
+- Multiple single lines: for example `{4,7,9}`
+- Line ranges and single lines: for example `{4,7-13,16,23-27,40}`
+
+**Input**
+
+````
+```js{1,4,6-7}
+export default { // Highlighted
+  data () {
+    return {
+      msg: `Highlighted!
+      This line isn't highlighted,
+      but this and the next 2 are.`,
+      motd: 'VitePress is awesome',
+      lorem: 'ipsum',
+    }
+  }
+}
+```
+````
+
+**Output**
+
+```js{1,4,6-8}
+export default { // Highlighted
+  data () {
+    return {
+      msg: `Highlighted!
+      This line isn't highlighted,
+      but this and the next 2 are.`,
+      motd: 'VitePress is awesome',
+      lorem: 'ipsum',
+    }
+  }
+}
+```
+
+## Line Numbers
+
+You can enable line numbers for each code blocks via config:
+
+```js
+module.exports = {
+  markdown: {
+    lineNumbers: true
+  }
+}
+```
+
+- Demo:
+
+<style>
+  .line-numbers-mobile-snap {
+    margin: 0 -1.5rem;
+    width: 100vw;
+    max-width: none !important;
+  }
+
+  .line-numbers-desktop-snap {
+    display: none;
+  }
+
+  @media (min-width:  720px) {
+    .line-numbers-mobile-snap {
+       display: none;
+    }
+
+    .line-numbers-desktop-snap {
+      display: block;
+    }
+  }
+</style>
+
+## Import Code Snippets
+
+You can import code snippets from existing files via following syntax:
+
+```md
+<<< @/filepath
+```
+
+It also supports [line highlighting](#line-highlighting-in-code-blocks):
+
+```md
+<<< @/filepath{highlightLines}
+```
+
+**Input**
+
+```md
+<<< @/.vitepress/theme/index.js{2}
+```
+
+**Code file**
+
+<!--lint disable strong-marker-->
+
+<<< @/.vitepress/theme/index.js
+
+<!--lint enable strong-marker-->
+
+**Output**
+
+<!--lint disable strong-marker-->
+
+<<< @/.vitepress/theme/index.js{2}
+
+<!--lint enable strong-marker-->
+
+::: tip
+The value of `@` corresponds to the source root. By default it's the VitePress project root, unless `srcDir` is configured.
+:::
+
+You can also use a [VS Code region](https://code.visualstudio.com/docs/editor/codebasics#_folding) to only include the corresponding part of the code file. You can provide a custom region name after a `#` following the filepath (`snippet` by default):
+
+**Input**
+
+```md
+<<< @/.vitepress/theme/index.js{1}
+```
+
+**Code file**
+
+<!--lint disable strong-marker-->
+
+<<< @/.vitepress/theme/index.js
+
+<!--lint enable strong-marker-->
+
+**Output**
+
+<!--lint disable strong-marker-->
+
+<<< @/.vitepress/theme/index.js#snippet{1}
+
+<!--lint enable strong-marker-->
+
+## Advanced Configuration
+
+VitePress uses [markdown-it](https://github.com/markdown-it/markdown-it) as the Markdown renderer. A lot of the extensions above are implemented via custom plugins. You can further customize the `markdown-it` instance using the `markdown` option in `.vitepress/config.js`:
+
+```js
+const anchor = require('markdown-it-anchor')
+
+module.exports = {
+  markdown: {
+    // options for markdown-it-anchor
+    // https://github.com/valeriangalliat/markdown-it-anchor#permalinks
+    anchor: {
+      permalink: anchor.permalink.headerLink()
+    },
+
+    // options for markdown-it-table-of-contents
+    toc: { includeLevel: [1, 2] },
+
+    config: (md) => {
+      // use more markdown-it plugins!
+      md.use(require('markdown-it-xxx'))
+    }
+  }
+}
+```
 
 <Comment />
 

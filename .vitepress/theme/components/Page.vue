@@ -13,7 +13,7 @@
         </p>
     </div>
 
-    <div class="pagination">
+    <!-- <div class="pagination">
         <a
             class="link"
             :class="{ active: pageCurrent === i }"
@@ -22,15 +22,15 @@
             :href="withBase(i === 1 ? '/index.html' : `/page_${i}.html`)"
             >{{ i }}</a
         >
-    </div>
+    </div> -->
 </template>
 
 <script lang="ts" setup>
 import { withBase } from 'vitepress'
 const props = defineProps({
     posts: Array,
-    pageCurrent: Number,
-    pagesNum: Number
+    // pageCurrent: Number,
+    // pagesNum: Number
 })
 </script>
 

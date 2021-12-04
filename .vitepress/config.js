@@ -1,15 +1,14 @@
 const { getPosts, generatePaginationPages } = require('./theme/serverUtils')
 
 async function config() {
-    const pageSize = 2
-    await generatePaginationPages(pageSize)
+    await generatePaginationPages()
     return {
         title: 'vitepress-blog',
         base:'/',
         description: 'vitepress,blog,blog-theme',
         themeConfig: {
             posts: await getPosts(),
-            pageSize: pageSize,
+            pageSize: 25565,
             website: 'https://github.com/airene/vitepress-blog-pure', //copyright link
             comment: {
                 repo: 'airene/vitepress-blog-pure',
@@ -23,6 +22,9 @@ async function config() {
                 { text: 'About', link: '/pages/about' }
                 // { text: 'Airene', link: 'http://airene.net' }  -- External link test
             ]
+        },
+        markdown: {
+          lineNumbers: true
         },
         srcExclude: ['README.md'] // exclude the README.md , needn't to compiler
         /*

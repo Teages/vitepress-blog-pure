@@ -15,7 +15,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useData,withBase } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 import { initTags } from '../functions'
 
 const { theme } = useData()

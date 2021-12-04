@@ -1,6 +1,10 @@
 <template>
-    <Layout />
-    <Copyright />
+  <Layout>
+    <template v-slot:page-bottom-ads>
+      <Copyright />
+    </template>
+  </Layout>
+  <!-- <Copyright /> -->
 </template>
 <script setup>
 import DefaultTheme from 'vitepress/theme'
